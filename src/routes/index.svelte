@@ -1,18 +1,31 @@
-<script lang="ts">
+<script lang="ts">  
+  import type { PreviewType } from "src/types/Preview.type";
+  import { ValueType } from '../types/Preview.type'
   import { afterUpdate } from 'svelte';
   import Editor from '../components/Editor.svelte'
   import Preview from '../components/Preview.svelte'
   let nbEditor: number[] = []
-  let listPreview: object[]= []
+  let listPreview: PreviewType[] = []
 
-  afterUpdate(() => {
-    console.log(listPreview)
-  })    
   const addNewEditor = () => {
     const oldNbEditor = nbEditor
     oldNbEditor.push(Date.now())
     nbEditor = oldNbEditor
   }
+  const countNodes = (listNodes: PreviewType[]) : number => {
+    let res = 0
+    listNodes.forEach(node => {
+      res++
+      if(node.type == ValueType.OBJECT){
+        const childNodes = node.value as PreviewType[]
+        res += countNodes(childNodes)
+      }
+    })
+    return res
+  }
+  afterUpdate(() => {
+    console.log(listPreview)
+  })
 </script>
 
 <section style="background-color: #2b1354 ;">
@@ -28,7 +41,7 @@
     <Editor id={id} bind:listPreview={listPreview} />    
     {/each}
   </div>
-  {#if nbEditor.length == listPreview.length}
+  {#if nbEditor.length == countNodes(listPreview)}
     <button on:click={addNewEditor}>
       + ADD
     </button>
