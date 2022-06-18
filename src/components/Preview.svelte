@@ -36,6 +36,7 @@ import { afterUpdate } from "svelte";
     margin-left: 15px;
   }
   p{
+    font-family: 'Fredoka', sans-serif;
     margin: 0;
     color: white;
   }

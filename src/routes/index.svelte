@@ -34,8 +34,10 @@
   {/each}
 </section>
 
-<section>
-  <b>Edit JSON</b>
+<section style="background: linear-gradient(#EBEAEF, #F6F8FE);">
+  <div style="margin-bottom: 10px;">
+    <b>Edit JSON</b>
+  </div>
   <div>
     {#each nbEditor as id}
     <Editor id={id} bind:listPreview={listPreview} />    
@@ -50,8 +52,21 @@
 
 <style>
   section{
+    font-family: 'Fredoka', sans-serif;
     height: 50vh;
     width: 100%;
     padding: 20px 30px;
+  }
+  section b {
+    font-weight: 600;
+    font-size: 26px;
+  }
+  button{
+    cursor: pointer;
+    font-family: 'Fredoka', sans-serif;
+    background-color: transparent;
+    border: 0;
+    color: #B4B2BE;
+    font-size: 16px;
   }
 </style>
