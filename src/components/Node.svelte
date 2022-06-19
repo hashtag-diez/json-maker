@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { PreviewType } from "src/types/Preview.type";
+  import type { NodeType } from "src/types/Node.type";
 import { afterUpdate } from "svelte";
-  import { ValueType } from '../types/Preview.type'  
+  import { ValueType } from '../types/Node.type'  
   export let id: number
   export let label: string
-  export let value: string | number | boolean | PreviewType[] | Array<number | string | boolean | PreviewType>;
+  export let value: string | number | boolean | NodeType[] | Array<number | string | boolean | NodeType>;
   export let type: ValueType
-  let childNodes: PreviewType[]
+  let childNodes: NodeType[]
   if(type== ValueType.OBJECT){
-     childNodes = value as PreviewType[]
+     childNodes = value as NodeType[]
   }
   afterUpdate(() => {
     if(type== ValueType.OBJECT){
-     childNodes = value as PreviewType[]
+     childNodes = value as NodeType[]
     }    
     console.log("Node n°", id, ", changement opéré ! Contenu de childNodes : ", childNodes)
   })
