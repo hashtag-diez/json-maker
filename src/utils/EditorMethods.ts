@@ -1,5 +1,5 @@
-import type { PreviewType } from "src/types/Preview.type";
-import { ValueType } from '../types/Preview.type'
+import type { NodeType } from "src/types/Node.type";
+import { ValueType } from '../types/Node.type'
 const associationStringValueType: Record<string, ValueType> = {
   String: ValueType.STRING,
   Number: ValueType.NUMBER,
@@ -7,30 +7,18 @@ const associationStringValueType: Record<string, ValueType> = {
   Array: ValueType.ARRAY,
   Object: ValueType.OBJECT
 }
-const getLastParent = (listPreview: PreviewType[]): number => {
-  let res = -1
-  listPreview.forEach(item => {
-    if(item.type == ValueType.OBJECT){
-      const childNodes = item.value as PreviewType[]
-      const innerParentId = getLastParent(childNodes)
-      res = (innerParentId == -1 ? item.id : innerParentId)
-    }
-  })
-  console.log(res)
-  return res
-}
-function insertChildPreview (listPreview: PreviewType[], item: PreviewType): boolean {
+function insertChildNode (listNode: NodeType[], item: NodeType): boolean {
   let inserted = false
-  for( let i = 0; i < listPreview.length; i++){
-    const node = listPreview[i]
+  for( let i = 0; i < listNode.length; i++){
+    const node = listNode[i]
     if(node.type == ValueType.OBJECT){
-      const nodePreviewList = node.value as PreviewType[]
+      const nodeNodeList = node.value as NodeType[]
       if(node.id == item.parentId){
-        nodePreviewList.push(item)
+        nodeNodeList.push(item)
         inserted = true
         break;
       } else {
-        inserted = insertChildPreview(nodePreviewList, item)
+        inserted = insertChildNode(nodeNodeList, item)
         if(inserted){
           break;
         }
@@ -39,21 +27,19 @@ function insertChildPreview (listPreview: PreviewType[], item: PreviewType): boo
   }
   return inserted
 }
-export const addNewItem = (hasParent: boolean, listPreview: PreviewType[], id: number, name: string, type: string, value: string | PreviewType[]) : PreviewType[] => {
-  const oldListPreview = listPreview
-  let parentId = null
-  let newItem: PreviewType = {
+export const addNewItem = (parentId: number, listNode: NodeType[], id: number, name: string, type: string, value: string | NodeType[]) : [NodeType, NodeType[]] => {
+  const oldListNode = listNode
+  let newItem: NodeType = {
       id: id,
       label: name,
       type: associationStringValueType[type],
       value: (associationStringValueType[type] == ValueType.OBJECT ? [] :  value),
       parentId: parentId
     }
-  if(hasParent){
-    newItem.parentId = getLastParent(oldListPreview)
-    insertChildPreview(oldListPreview, newItem)
+  if(parentId != 0){
+    insertChildNode(oldListNode, newItem)
   } else {
-    oldListPreview.push({
+    oldListNode.push({
       id: id,
       label: name,
       type: associationStringValueType[type],
@@ -61,21 +47,21 @@ export const addNewItem = (hasParent: boolean, listPreview: PreviewType[], id: n
       parentId: parentId
     })
   }
-  return oldListPreview
+  return [newItem, oldListNode]
 }
 
-export const deleteItem = (nbEditor: number[], listPreview: PreviewType[], id: number) : [PreviewType[], number[]] => {
+export const deleteItem = (nbEditor: number[], listNode: NodeType[], id: number) : [NodeType[], number[]] => {
   let oldNbEditor = nbEditor
   oldNbEditor = oldNbEditor.filter(editorId => editorId !== id)
-  const oldListPreview = listPreview.filter(item => {
+  const oldListNode = listNode.filter(item => {
     if(item.type === ValueType.OBJECT){
       if(item.id === id){
-        const childNodes = item.value as PreviewType[]
+        const childNodes = item.value as NodeType[]
         const childNodesId = childNodes.map(item => item.id)
         console.log("Liste des ids des enfants = ", childNodesId)
         oldNbEditor = oldNbEditor.filter(editorId => childNodesId.find(childId => editorId == childId)==undefined)
       } else {
-        const childNodes = item.value as PreviewType[]
+        const childNodes = item.value as NodeType[]
         const [newChildNodes, newNbEditor] = deleteItem(oldNbEditor, childNodes, id)
         item.value = newChildNodes
         oldNbEditor = newNbEditor
@@ -83,5 +69,5 @@ export const deleteItem = (nbEditor: number[], listPreview: PreviewType[], id: n
     }
     return item.id !== id
   })
-  return [oldListPreview, oldNbEditor]
+  return [oldListNode, oldNbEditor]
 }

@@ -1,78 +1,83 @@
 <script lang="ts">
-  import type { PreviewType } from "src/types/Preview.type";
-  import { ValueType } from '../types/Preview.type'
+  import type { NodeType } from "src/types/Node.type";
   import { addNewItem, deleteItem } from "../utils/EditorMethods"
   import Fa from 'svelte-fa/src/fa.svelte'
   import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons/index.es'
+  import ObjectBlock from "./ObjectBlock.svelte";
+import PrimitiveBlock from "./PrimitiveBlock.svelte";
 
-  export let listPreview: PreviewType[];
+  export let listNode: NodeType[];
   export let nbEditor: number[];
+  export let parentId: number;
   export let id: number;
+  let entity: NodeType
   let edited: boolean = false
   let name: string = ""
-  let value: string | PreviewType[] = ""
+  let value: string | NodeType[] = ""
   let type: string = ""
-  let hasParent: boolean = false
 
   const handleNewItem = () => {
-    const oldListPreview = addNewItem(hasParent, listPreview, id, name, type, value)
-    listPreview = oldListPreview
+    const [newItem, oldListNode] = addNewItem(parentId, listNode, id, name, type, value)
+    listNode = oldListNode
     edited = true
+    entity = newItem
   }
   const handleDeletion = () => {
     console.log("ID visé : ", id)
-    console.log("AVANT : ", listPreview)
-    const [ oldListPreview, oldNbEdtior ] = deleteItem(nbEditor, listPreview, id)
-    console.log("APRÈS : ", oldListPreview)
-    listPreview = oldListPreview
+    console.log("AVANT : ", listNode)
+    const [ oldListNode, oldNbEdtior ] = deleteItem(nbEditor, listNode, id)
+    console.log("APRÈS : ", oldListNode)
+    listNode = oldListNode
     nbEditor = oldNbEdtior
   }
 </script>
-<form style="display: flex; gap: 10px">
-  <input bind:value={name} type="text" name="" placeholder="Name" id="">
-  <div>
-    <input bind:checked={hasParent} type="checkbox" name="hasParent" id="">
-    <label for="hasParent">parent ?</label>
-  </div>
-  <select bind:value={type} name="" id="">
-    <option value="">type</option>
-    <option value="Object">Object</option>
-    <option value="String">String</option>
-    <option value="Number">Number</option>
-    <option value="Array">Array</option>
-    <option value="Boolean">Boolean</option>
-  </select>
-  {#if type === ""} 
-    <input bind:value={value} type="text" placeholder="Value" name="" id="" disabled>
-  {:else if (type === "String" || type === "Array") }
-    <input bind:value={value} type="text" placeholder="Value" name="" id="">
-  {:else if (type === "Number")}
-    <input bind:value={value} type="number" placeholder="Value" name="" id="">
-  {:else if (type === "Boolean")}
-    <select bind:value={value} name="" id="">
-      <option value="">Value</option>
-      <option value={true} selected>true</option>
-      <option value={false}>false</option>  
-    </select>    
-  {/if}  
-  {#if !edited && name!=="" && (type === "Object" || (type !== "Object" && value!=="")) && type!==""}
-    <div class="validate" on:click={() => handleNewItem()}>
-      <Fa 
-        icon={faCheck} 
-        color="#ffffff"  
-      />
-    </div>
-  {/if}  
-  <div
-  on:click={() => handleDeletion()}
-  >
-  <Fa 
-    style="cursor: pointer;"
-    icon={faXmark} 
-    color="#95a5a6"  
-  /> 
-  </div>
-</form>
+  {#if !edited}
+    <form style="display: flex; gap: 10px">
+      <input bind:value={name} type="text" name="" placeholder="Name" id="">
+      <select bind:value={type} name="" id="">
+        <option value="">type</option>
+        <option value="Object">Object</option>
+        <option value="String">String</option>
+        <option value="Number">Number</option>
+        <option value="Array">Array</option>
+        <option value="Boolean">Boolean</option>
+      </select>
+      {#if type === ""} 
+        <input bind:value={value} type="text" placeholder="Value" name="" id="" disabled>
+      {:else if (type === "String" || type === "Array") }
+        <input bind:value={value} type="text" placeholder="Value" name="" id="">
+      {:else if (type === "Number")}
+        <input bind:value={value} type="number" placeholder="Value" name="" id="">
+      {:else if (type === "Boolean")}
+        <select bind:value={value} name="" id="">
+          <option value="">Value</option>
+          <option value={true} selected>true</option>
+          <option value={false}>false</option>  
+        </select>    
+      {/if}  
+      {#if !edited && name!=="" && (type === "Object" || (type !== "Object" && value!=="")) && type!==""}
+        <div class="validate" on:click={() => handleNewItem()}>
+          <Fa 
+            icon={faCheck} 
+            color="#ffffff"  
+          />
+        </div>
+      {/if}
+      <div
+      on:click={() => handleDeletion()}
+      >
+        <Fa 
+          style="cursor: pointer;"
+          icon={faXmark} 
+          color="#95a5a6"  
+        /> 
+      </div>
+  </form>
+    {:else if type=="Object"}
+        <ObjectBlock id={id} bind:listNode={listNode} bind:nbEditor={nbEditor} bind:entity={entity}/>
+    {:else}
+        <PrimitiveBlock bind:listNode={listNode} bind:nbEditor={nbEditor} bind:entity={entity}/>
+    {/if}
 
 <style>
   form{
