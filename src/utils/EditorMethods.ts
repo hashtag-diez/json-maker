@@ -7,7 +7,7 @@ const associationStringValueType: Record<string, ValueType> = {
   Array: ValueType.ARRAY,
   Object: ValueType.OBJECT
 }
-export const getLastParent = (listPreview: PreviewType[]): number => {
+const getLastParent = (listPreview: PreviewType[]): number => {
   let res = -1
   listPreview.forEach(item => {
     if(item.type == ValueType.OBJECT){
@@ -19,7 +19,7 @@ export const getLastParent = (listPreview: PreviewType[]): number => {
   console.log(res)
   return res
 }
-export function insertChildPreview (listPreview: PreviewType[], item: PreviewType): boolean {
+function insertChildPreview (listPreview: PreviewType[], item: PreviewType): boolean {
   let inserted = false
   for( let i = 0; i < listPreview.length; i++){
     const node = listPreview[i]
@@ -39,7 +39,7 @@ export function insertChildPreview (listPreview: PreviewType[], item: PreviewTyp
   }
   return inserted
 }
-export const updateListPreview = (hasParent: boolean, listPreview: PreviewType[], id: number, name: string, type: string, value: string | PreviewType[]) : PreviewType[] => {
+export const addNewItem = (hasParent: boolean, listPreview: PreviewType[], id: number, name: string, type: string, value: string | PreviewType[]) : PreviewType[] => {
   const oldListPreview = listPreview
   let parentId = null
   let newItem: PreviewType = {
@@ -62,4 +62,26 @@ export const updateListPreview = (hasParent: boolean, listPreview: PreviewType[]
     })
   }
   return oldListPreview
+}
+
+export const deleteItem = (nbEditor: number[], listPreview: PreviewType[], id: number) : [PreviewType[], number[]] => {
+  let oldNbEditor = nbEditor
+  oldNbEditor = oldNbEditor.filter(editorId => editorId !== id)
+  const oldListPreview = listPreview.filter(item => {
+    if(item.type === ValueType.OBJECT){
+      if(item.id === id){
+        const childNodes = item.value as PreviewType[]
+        const childNodesId = childNodes.map(item => item.id)
+        console.log("Liste des ids des enfants = ", childNodesId)
+        oldNbEditor = oldNbEditor.filter(editorId => childNodesId.find(childId => editorId == childId)==undefined)
+      } else {
+        const childNodes = item.value as PreviewType[]
+        const [newChildNodes, newNbEditor] = deleteItem(oldNbEditor, childNodes, id)
+        item.value = newChildNodes
+        oldNbEditor = newNbEditor
+      }
+    }
+    return item.id !== id
+  })
+  return [oldListPreview, oldNbEditor]
 }

@@ -1,11 +1,12 @@
 <script lang="ts">
   import type { PreviewType } from "src/types/Preview.type";
   import { ValueType } from '../types/Preview.type'
-  import { getLastParent, updateListPreview, insertChildPreview } from "../utils/EditorMethods"
+  import { addNewItem, deleteItem } from "../utils/EditorMethods"
   import Fa from 'svelte-fa/src/fa.svelte'
   import { faCheck, faXmark } from '@fortawesome/free-solid-svg-icons/index.es'
 
   export let listPreview: PreviewType[];
+  export let nbEditor: number[];
   export let id: number;
   let edited: boolean = false
   let name: string = ""
@@ -14,9 +15,17 @@
   let hasParent: boolean = false
 
   const handleNewItem = () => {
-    const oldListPreview = updateListPreview(hasParent, listPreview, id, name, type, value)
+    const oldListPreview = addNewItem(hasParent, listPreview, id, name, type, value)
     listPreview = oldListPreview
     edited = true
+  }
+  const handleDeletion = () => {
+    console.log("ID visé : ", id)
+    console.log("AVANT : ", listPreview)
+    const [ oldListPreview, oldNbEdtior ] = deleteItem(nbEditor, listPreview, id)
+    console.log("APRÈS : ", oldListPreview)
+    listPreview = oldListPreview
+    nbEditor = oldNbEdtior
   }
 </script>
 <form style="display: flex; gap: 10px">
@@ -54,10 +63,15 @@
       />
     </div>
   {/if}  
+  <div
+  on:click={() => handleDeletion()}
+  >
   <Fa 
+    style="cursor: pointer;"
     icon={faXmark} 
     color="#95a5a6"  
-  />  
+  /> 
+  </div>
 </form>
 
 <style>

@@ -40,15 +40,15 @@
   </div>
   <div>
     {#each nbEditor as id}
-    <Editor id={id} bind:listPreview={listPreview} />    
+    <Editor id={id} bind:listPreview={listPreview} bind:nbEditor={nbEditor} />    
     {/each}
   </div>
   {#if nbEditor.length == countNodes(listPreview)}
-    <button on:click={addNewEditor}>
+    <button on:click={() => addNewEditor()}>
       + ADD
     </button>
   {/if}
-</section>
+</section>xs
 
 <style>
   section{

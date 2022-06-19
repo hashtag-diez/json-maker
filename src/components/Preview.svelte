@@ -27,6 +27,7 @@ import { afterUpdate } from "svelte";
       <svelte:self id={item.id} label={item.label} value={item.value} type={item.type}  />    
     </div>
     {/each}
+    {"}"}
   {:else if value != null}
     {value}
   {/if}
