@@ -12,7 +12,7 @@ export const findNode = (id:number, listNode: NodeType[]) : NodeType[] => {
     if(currNode.type == ValueType.OBJECT){
       const childNodes = currNode.value as NodeType[]
       res = findNode(id, childNodes)
-      if(res != []){
+      if(res.length !== 0){
         break;
       }
     }
