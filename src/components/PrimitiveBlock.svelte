@@ -59,10 +59,13 @@
 </div>
 
 <style>
+	p{
+		margin: 0;
+	}
 	.object {
 		display: flex;
 		flex-direction: column;
-		margin: 10px 0px;
+		margin: 0px 0px;
     color: #95a5a6;
 	}
 	.counter {
@@ -74,8 +77,8 @@
 		display: flex;
 		flex-direction: row;
 		justify-content: space-between;
-		background: #ffffff;
-		padding: 3px 10px;
+		background: #ffffff91;
+		padding: 17px 10px;
 		margin: 10px 0px;
 		border-radius: 5px;
 		display: flex;

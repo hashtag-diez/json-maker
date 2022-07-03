@@ -23,10 +23,7 @@ import PrimitiveBlock from "./PrimitiveBlock.svelte";
     entity = newItem
   }
   const handleDeletion = () => {
-    console.log("ID visé : ", id)
-    console.log("AVANT : ", listNode)
     const [ oldListNode, oldNbEdtior ] = deleteItem(nbEditor, listNode, id)
-    console.log("APRÈS : ", oldListNode)
     listNode = oldListNode
     nbEditor = oldNbEdtior
   }
@@ -59,6 +56,7 @@ import PrimitiveBlock from "./PrimitiveBlock.svelte";
         <div class="validate" on:click={() => handleNewItem()}>
           <Fa 
             icon={faCheck} 
+            style="cursor: pointer;"
             color="#ffffff"  
           />
         </div>
@@ -92,7 +90,7 @@ import PrimitiveBlock from "./PrimitiveBlock.svelte";
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px
   }
-  input[type="text"], select{
+  input[type="text"], input[type="number"], select{
     font-family: 'Fredoka', sans-serif;
     padding: 10px;
     background-color: #F1F5FD;
@@ -101,17 +99,17 @@ import PrimitiveBlock from "./PrimitiveBlock.svelte";
     padding-left: 12px;
     font-size: 16px;
   }
-  input[type="text"]:focus, select:focus{
+  input[type="text"]:focus, input[type="number"]:focus, select:focus{
     background-color: #E1E8F6;
     outline: none;
   }
-  input[type="text"]::placeholder{
+  input[type="text"]::placeholder, input[type="number"]::placeholder{
     color: #95a5a6;
   }
   .validate{
     display: grid;
     place-items: center;
-    padding: 10px 15px;
+    padding: 13px 15px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     background-color: #367AFC;

@@ -5,7 +5,6 @@
 	import Fa from 'svelte-fa/src/fa.svelte';
 	import Editor from '../components/Editor.svelte';
 	import { faChevronDown, faXmark } from '@fortawesome/free-solid-svg-icons/index.es';
-	import { ValueType } from '../types/Node.type';
 	import { afterUpdate } from 'svelte';
 	export let id: number;
 	export let nbEditor: number[];
@@ -16,7 +15,10 @@
 	let childNodes: NodeType[] = findNode(id, listNode);
 
 	afterUpdate(() => {
+		console.log(id)
+		console.log(listNode)
 		childNodes = findNode(id, listNode);
+		console.log(childNodes)
 	});
 	const addNewEditor = () => {
 		const oldNbEditor = nbChildEditor;
@@ -65,7 +67,7 @@
 		margin: 10px 0px;
 	}
 	.childNodes {
-		margin-left: 15px;
+		margin-left: 25px;
 	}
 	.counter {
 		color: #95a5a6;
@@ -101,5 +103,7 @@
 		border: 0;
 		color: #b4b2be;
 		font-size: 16px;
+		margin-top: 10px;
+    margin-bottom: 10px;
 	}
 </style>

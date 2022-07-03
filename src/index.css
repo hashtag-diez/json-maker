@@ -3,3 +3,7 @@ body{
   width: 100vw;
   overflow: hidden;			
 }
+body > div{
+  display: flex;
+  flex-direction: row;
+}
